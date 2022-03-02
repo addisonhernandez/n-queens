@@ -200,13 +200,35 @@
     hasMinorDiagonalConflictAt: function (minorDiagonalColumnIndexAtFirstRow) {
       // on each iteration: increment row (for loop)
       //                    decrease col
-      return false; // fixme
+
+      let col = minorDiagonalColumnIndexAtFirstRow;
+      let numberOfQueens = 0;
+
+      for (const row of _.range(this.get('n'))) {
+        if (!this._isInBounds(row, col)) {
+          col--;
+          continue;
+        }
+
+        numberOfQueens += this.get(row)[col];
+
+        if (numberOfQueens > 1) {
+          return true;
+        }
+
+        col--;
+      }
+
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function () {
       // Minor Diagonals are in the range [0 -> 2n - 1)
-      return false; // fixme
+      const n = this.get('n');
+      const minorDiagonalColumnIndexes = _.range(2 * n - 1);
+
+      return _.some(minorDiagonalColumnIndexes, index => this.hasMinorDiagonalConflictAt(index));
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
