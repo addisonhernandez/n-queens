@@ -96,9 +96,9 @@
       //  check if hasRowConflictAt(row)
 
       // get the size of the matrix
-      var size = this.get('n');
+      const size = this.get('n');
       // iterate from 0 to less than n
-      var rows = _.range(size);
+      const rows = _.range(size);
       // call hasRowConflictAt for each row
       return _.some(rows, (row) => { return this.hasRowConflictAt(row); });
       // if all are false > return false : if any is true return true
@@ -111,12 +111,36 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function (colIndex) {
-      return false; // fixme
+      // iterate over every row
+      //  check row[colIndex]
+      //  counter to track '1's
+      // if counter > 1 -> true
+
+      const rows = _.range(this.get('n'));
+      let numberOfQueens = 0;
+
+      for (const row of rows) {
+        numberOfQueens += this.get(row)[colIndex];
+
+        if (numberOfQueens > 1) {
+          return true;
+        }
+      }
+
+      return false;
+
+
+      // const rows = this.rows();
+      // const transpose = _.unzip(rows);
+
+      // return (new Board(transpose)).hasRowConflictAt(colIndex);
+
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function () {
-      return false; // fixme
+      const cols = _.range(this.get('n'));
+      return _.some(cols, (col) => { return this.hasColConflictAt(col); });
     },
 
 
