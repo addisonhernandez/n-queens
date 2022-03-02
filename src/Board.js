@@ -150,13 +150,45 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function (majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      // create pointers to current row & col
+      // set row -> 0
+      // let row = 0;
+      // set col -> majorDiagonalColumnIndexAtFirstRow
+      let col = majorDiagonalColumnIndexAtFirstRow;
+
+      const rows = _.range(this.get('n'));
+
+      let numberOfQueens = 0;
+
+      // iterate (adding 1 to row and col after each step)
+      //  if (row, col) is not in bounds -> continue
+      //   increment counter of number of queens if (row, col) is 1
+      //   if counter > 1 -> return true
+
+      for (const row of rows) {
+        if (this._isInBounds(row, col)) {
+          if (this.get(row)[col]) {
+            numberOfQueens++;
+          }
+          if (numberOfQueens > 1) {
+            return true;
+          }
+        }
+        col++;
+      }
+
+
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function () {
       // Major Diagonals are in the range [-(n-1) -> n)
-      return false; // fixme
+
+      const n = this.get('n');
+      const majorDiagonalColumnIndexes = _.range(-(n - 1), n);
+
+      return _.some(majorDiagonalColumnIndexes, index => this.hasMajorDiagonalConflictAt(index));
     },
 
 
@@ -166,6 +198,8 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function (minorDiagonalColumnIndexAtFirstRow) {
+      // on each iteration: increment row (for loop)
+      //                    decrease col
       return false; // fixme
     },
 
