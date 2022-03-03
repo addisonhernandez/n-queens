@@ -205,15 +205,12 @@
       let numberOfQueens = 0;
 
       for (const row of _.range(this.get('n'))) {
-        if (!this._isInBounds(row, col)) {
-          col--;
-          continue;
-        }
+        if (this._isInBounds(row, col)) {
+          numberOfQueens += this.get(row)[col];
 
-        numberOfQueens += this.get(row)[col];
-
-        if (numberOfQueens > 1) {
-          return true;
+          if (numberOfQueens > 1) {
+            return true;
+          }
         }
 
         col--;
