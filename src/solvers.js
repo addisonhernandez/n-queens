@@ -29,6 +29,16 @@ Implementation -
 
 */
 
+// === Recursive Backtracking Algorithm ===
+// Base Case:
+// - If row === 'n' -> we've found a solution -> solutionCount++
+//
+// Try to put a piece in the current row:
+// Iterate over the columns and place a piece at each
+// - if there's no conflict -> recurse at row + 1
+// - if there's a conflict -> backtrack (remove piece)
+
+// KEY INSIGHT: The ~Call Stack~ is our stack data structure!
 
 
 window.findNRooksSolution = function (n) {
@@ -91,41 +101,50 @@ window.countNRooksSolutions = function (n) {
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function (n) {
-  const solution = new Board({ n });
-  let numberOfQueens = 0;
+  // === Recursive Backtracking Algorithm ===
+  // Base Case:
+  // - If row === 'n' -> we've found a solution -> solutionCount++
+  //
+  // Try to put a piece in the current row:
+  // Iterate over the columns and place a piece at each
+  // - if there's no conflict -> recurse at row + 1
+  // - if there's a conflict -> backtrack (remove piece)
 
-  // TODO: Re-examine our logic. We're failing to find a solution for n=4
-  // NOTE: we need to implement Backtracking! Use a stack to undo moves
-  for (const row of _.range(n)) {
-    for (const col of _.range(n)) {
-      if (!solution.get(row)[col]) {
-        solution.togglePiece(row, col);
-        numberOfQueens++;
+  // KEY INSIGHT: The ~Call Stack~ is our stack data structure!
 
-        if (
-          solution.hasRowConflictAt(row) ||
-          solution.hasColConflictAt(col) ||
-          solution.hasMajorDiagonalConflictAt(col - row) ||
-          solution.hasMinorDiagonalConflictAt(col + row)
-        ) {
-          solution.togglePiece(row, col);
-          numberOfQueens--;
-        } else {
-          if (numberOfQueens === n) {
-            return solution.rows();
-          }
-        }
-      }
-    }
-  }
 
-  return solution.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function (n) {
-  var solutionCount = undefined; //fixme
+  let solutionCount = 0; //fixme
 
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
+  const solutionBoard = new Board({n});
+  const cols = _.range(n);
+
+  const findSolutions = function (row) {
+    // base case:
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+
+    for (const col of cols) {
+      solutionBoard.togglePiece(row, col);
+
+      if (!solutionBoard.hasAnyQueensConflicts()) {
+        findSolutions(row + 1);
+      }
+
+      solutionBoard.togglePiece(row, col);
+    }
+
+    // if we exhaust all columns
+    return;
+  };
+
+  // find solutions starting at the first row
+  findSolutions(0);
+
   return solutionCount;
 };
