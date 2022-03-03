@@ -42,60 +42,65 @@ Implementation -
 
 
 window.findNRooksSolution = function (n) {
-  //var solution = undefined; //fixme
+  const rooksBoard = new Board({n});
+  const cols = _.range(n);
+  let solutionCount = 0;
 
-  // Iterate over each space
-  // If the space is occupied -> continue
-  // If the space is free -> place a rook
-  // Check if there is a conflict with our helper function (row, col)
-  // If there is none -> continue
-  // Otherwise, remove the rook and then continue
+  const findRooks = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
 
-  const solution = new Board({ n });
-  let numberOfRooks = 0;
+    for (let col of cols) {
+      rooksBoard.togglePiece(row, col);
 
-  for (const row of _.range(n)) {
-    for (const col of _.range(n)) {
-      if (!solution.get(row)[col]) {
-        solution.togglePiece(row, col);
-        numberOfRooks++;
+      if (!rooksBoard.hasColConflictAt(col)) {
+        findRooks(row + 1);
+      }
 
-        if (solution.hasRowConflictAt(row) || solution.hasColConflictAt(col)) {
-          solution.togglePiece(row, col);
-          numberOfRooks--;
-        } else {
-          if (numberOfRooks === n) {
-            return solution.rows();
-          }
-        }
+      if (!solutionCount) {
+        rooksBoard.togglePiece(row, col);
+      } else {
+        return;
       }
     }
-  }
 
-  return null;
+  };
+
+  findRooks(0);
+
+  return rooksBoard.rows();
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function (n) {
-  var solutionCount = 0;
+  let solutionCount = 0;
 
-  // Create a stack (array) to track the (row, col) of the last placed rook
+  const solutionBoard = new Board({n});
+  const cols = _.range(n);
 
-  // consider one row at a time. Only consider a row if the prev row is occupied by a rook
+  const findSolutions = function (row) {
+    // base case:
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
 
-  // try to place a rook in the first col
-  //  if there is a conflict (ONLY check for col conflict) -> remove the rook
-  // keep trying to place rook in the next col until no conflict
+    for (const col of cols) {
+      solutionBoard.togglePiece(row, col);
 
-  // if there is no next column -> pop (row, col) off the stack and continue from there
+      if (!solutionBoard.hasColConflictAt(col)) {
+        findSolutions(row + 1);
+      }
 
-  // push (row, col) to the stack
+      solutionBoard.togglePiece(row, col);
+    }
+  };
 
-  // consider the next row
+  // find solutions starting at the first row
+  findSolutions(0);
 
-  // if number of rooks is 'n' -> increment solution count -> pop (row, col) off the stack and continue from there
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
