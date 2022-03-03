@@ -112,12 +112,43 @@ window.findNQueensSolution = function (n) {
 
   // KEY INSIGHT: The ~Call Stack~ is our stack data structure!
 
+  let solutionCount = 0;
+  const solutionBoard = new Board({n});
+  const cols = _.range(n);
 
+  const findSolution = function (row) {
+    // base case:
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+
+    for (const col of cols) {
+      solutionBoard.togglePiece(row, col);
+
+      if (!(
+        solutionBoard.hasColConflictAt(col) ||
+        solutionBoard.hasMajorDiagonalConflictAt(col - row) ||
+        solutionBoard.hasMinorDiagonalConflictAt(col + row)
+      )) {
+        findSolution(row + 1);
+      }
+      if (!solutionCount) {
+        solutionBoard.togglePiece(row, col);
+      } else {
+        return;
+      }
+    }
+  };
+
+  findSolution(0);
+
+  return solutionBoard.rows();
 };
 
 // return the number of nxn chessboards that exist, with n queens placed such that none of them can attack each other
 window.countNQueensSolutions = function (n) {
-  let solutionCount = 0; //fixme
+  let solutionCount = 0;
 
   const solutionBoard = new Board({n});
   const cols = _.range(n);
@@ -132,7 +163,11 @@ window.countNQueensSolutions = function (n) {
     for (const col of cols) {
       solutionBoard.togglePiece(row, col);
 
-      if (!solutionBoard.hasAnyQueensConflicts()) {
+      if (!(
+        solutionBoard.hasColConflictAt(col) ||
+        solutionBoard.hasMajorDiagonalConflictAt(col - row) ||
+        solutionBoard.hasMinorDiagonalConflictAt(col + row)
+      )) {
         findSolutions(row + 1);
       }
 
