@@ -94,6 +94,8 @@ window.findNQueensSolution = function (n) {
   const solution = new Board({ n });
   let numberOfQueens = 0;
 
+  // TODO: Re-examine our logic. We're failing to find a solution for n=4
+  // NOTE: we need to implement Backtracking! Use a stack to undo moves
   for (const row of _.range(n)) {
     for (const col of _.range(n)) {
       if (!solution.get(row)[col]) {
